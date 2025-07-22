@@ -7,28 +7,29 @@ const server = Bun.serve({
   async fetch(request) {
     const url = new URL(request.url);
 
-    if (url.pathname === "/api/leaderboard") {
-      try {
-        const response = await fetch(URL);
-        const data = await response.json();
-        return new Response(JSON.stringify(data), {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json"
-          }
-        });
-      } catch (error) {
-        return new Response(JSON.stringify({ error: "Failed to fetch data" }), {
-          status: 500,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json"
-          }
-        });
-      }
+    // filter by player name in url params instead of hardcoding
+    if (url.pathname !== "/api/leaderboard") {
+      return new Response("Not Found", { status: 404 });
     }
 
-    return new Response("Not Found", { status: 404 });
+    const headers = {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    };
+
+    try {
+      const response = await fetch(URL);
+      const data = await response.json();
+      return Response.json(data, { headers });
+    } catch (error) {
+      return Response.json(
+        { error: "KO" },
+        {
+          status: 500,
+          headers,
+        },
+      );
+    }
   },
 });
 
