@@ -1,3 +1,5 @@
+const URL = `https://obsextension.vercel.app/`;
+
 const getLeaderboardQuery = async () => {
   try {
     const response = await fetch(URL);
