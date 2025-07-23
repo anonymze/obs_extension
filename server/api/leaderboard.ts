@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 
-const PLAYER = "DimS"; // avoid hardcoding, get the player by the params URL
+const PLAYER = "dims"; // avoid hardcoding, get the player by the params URL
 const URL = `https://lounge.mkcentral.com/api/player/leaderboard?game=mkworld&season=0&search=${PLAYER}`;
 // https://lounge.mkcentral.com/api/player/leaderboard?game=mkworld&season=0&search=crocodyle
 
