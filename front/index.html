@@ -115,16 +115,43 @@
         <script src="queries/leaderboard.js"></script>
         <script>
             const DELAY_REFRESH = 20000; // 20s
+            let previousData = undefined;
+
+            const calculateCurrentElo = (currentData) => {
+                if (!previousData) return currentData?.data?.[0]?.mmr;
+
+                const current = currentData.data[0];
+                const previous = previousData.data[0];
+
+                // If gainLossLastTen changed, calculate new MMR
+                if (current.gainLossLastTen !== previous.gainLossLastTen) {
+                    const mmrChange =
+                        current.gainLossLastTen - previous.gainLossLastTen;
+                    return previous.mmr + mmrChange;
+                }
+
+                return current.mmr;
+            };
 
             const updateEloDisplay = async () => {
                 try {
                     const data = await getLeaderboardQuery();
+                    if (!data) return;
+
+                    const calculatedElo = calculateCurrentElo(data);
+                    const peakElo = data?.data?.[0]?.maxMmr;
+
+                    document.getElementById("current-elo").textContent =
+                        calculatedElo;
+                    document.getElementById("peak-elo").textContent =
+                        calculatedElo > peakElo ? calculatedElo : peakElo;
+
+                    previousData = data;
                 } catch (error) {
                     console.log(error);
                 }
             };
 
-            // 20 s
             setInterval(updateEloDisplay, DELAY_REFRESH);
             updateEloDisplay();
         </script>
