@@ -115,22 +115,24 @@
         <script src="queries/leaderboard.js"></script>
         <script>
             const DELAY_REFRESH = 20000; // 20s
-            let previousData = undefined;
+            let previousMmr = undefined;
+            let previousGainLoss = undefined;
 
-            const calculateCurrentElo = (currentData) => {
-                if (!previousData) return currentData?.data?.[0]?.mmr;
+            const calculateCurrentElo = (currentMmr, currentGainLoss) => {
+                if (!previousMmr) return currentMmr;
 
-                const current = currentData.data[0];
-                const previous = previousData.data[0];
-
-                // If gainLossLastTen changed, calculate new MMR
-                if (current.gainLossLastTen !== previous.gainLossLastTen) {
-                    const mmrChange =
-                        current.gainLossLastTen - previous.gainLossLastTen;
-                    return previous.mmr + mmrChange;
+                // If API MMR changed (caught up), use API value
+                if (currentMmr !== previousMmr && currentGainLoss === previousGainLoss) {
+                    return currentMmr;
                 }
 
-                return current.mmr;
+                // If gainLossLastTen changed, calculate new MMR
+                if (currentGainLoss !== previousGainLoss) {
+                    const mmrChange = currentGainLoss - previousGainLoss;
+                    return previousMmr + mmrChange;
+                }
+
+                return previousMmr;
             };
 
             const updateEloDisplay = async () => {
@@ -138,15 +140,24 @@
                     const data = await getLeaderboardQuery();
                     if (!data) return;
 
-                    const calculatedElo = calculateCurrentElo(data);
-                    const peakElo = data?.data?.[0]?.maxMmr;
+                    const currentMmr = data.data?.[0]?.mmr;
+                    const currentGainLossTen = data.data?.[0]?.gainLossLastTen;
+                    const currentMaxMmr = data.data?.[0]?.maxMmr;
+
+                    const calculatedElo = calculateCurrentElo(
+                        currentMmr,
+                        currentGainLossTen,
+                    );
 
                     document.getElementById("current-elo").textContent =
                         calculatedElo;
                     document.getElementById("peak-elo").textContent =
-                        calculatedElo > peakElo ? calculatedElo : peakElo;
+                        calculatedElo > currentMaxMmr
+                            ? calculatedElo
+                            : currentMaxMmr;
 
-                    previousData = data;
+                    previousMmr = currentMmr;
+                    previousGainLoss = currentGainLossTen;
                 } catch (error) {
                     console.log(error);
                 }
