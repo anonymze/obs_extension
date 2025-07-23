@@ -145,7 +145,7 @@
                     const data = await getLeaderboardQuery();
                     if (!data) return;
 
-                    // not really up to date
+                    // not up to date
                     const currentMmr = data.data?.[0]?.mmr;
                     const currentMaxMmr = data.data?.[0]?.maxMmr;
                     // up to date
