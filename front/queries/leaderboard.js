@@ -1,9 +1,8 @@
 const API_URL = `https://obsextension.vercel.app`;
-const API_LEADERBOARD = `${API_URL}/api/leaderboard`;
 
 const getLeaderboardQuery = async () => {
   try {
-    const response = await fetch(API_LEADERBOARD);
+    const response = await fetch(`${API_URL}/api/leaderboard`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
