@@ -125,7 +125,7 @@
                     return (previousMmr = currentMmr);
                 }
 
-                // if API MMR changed (caught up), use API value
+                // if API MMR changed (caught up), use API value (maybe we can delete this and only use gainLoss as a reference)
                 if (currentMmr !== previousMmr) {
                     previousGainLossTen = currentGainLoss;
                     return currentMmr;

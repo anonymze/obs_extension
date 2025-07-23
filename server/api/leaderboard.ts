@@ -11,37 +11,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const response = await fetch(URL);
     const data = await response.json();
-    // return res.status(200).json(data);
-    return res.status(200).json({
-      totalPlayers: 1,
-      data: [
-        {
-          id: 72876,
-          overallRank: 1430,
-          countryCode: "FR",
-          name: "Crocodyle",
-          mmr: 5684,
-          maxMmr: 5834,
-          winRate: 0.5454545454545454545454545455,
-          winsLastTen: 5,
-          lossesLastTen: 5,
-          gainLossLastTen: -134,
-          eventsPlayed: 11,
-          largestGain: 218,
-          largestLoss: -218,
-          noSQAverageScore: 84.8,
-          noSQAverageScoreLastTen: 84.8,
-          mmrRank: {
-            division: "Ranked",
-            name: "Ranked",
-          },
-          maxMmrRank: {
-            division: "Ranked",
-            name: "Ranked",
-          },
-        },
-      ],
-    });
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ error: "KO" });
   }
